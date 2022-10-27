@@ -1,3 +1,42 @@
+export const female_names = [
+    "Alana",
+    "Clavdia",
+    "Danya",
+    "Dezdrelda",
+    "Diavola",
+    "Dorina",
+    "Drasha",
+    "Drilvia",
+    "Elisabeta",
+    "Fatima",
+    "Grilsha",
+    "Isabella",
+    "Ivana",
+    "Jarzinka",
+    "Kala",
+    "Katerina",
+    "Kereza",
+    "Korina",
+    "Lavinia",
+    "Magda",
+    "Marta",
+    "Mathilda",
+    "Minodora",
+    "Mirabel",
+    "Miruna",
+    "Nimira",
+    "Nyanka",
+    "Olivenka",
+    "Ruxandra",
+    "Serina",
+    "Tereska",
+    "Valentina",
+    "Vasha",
+    "Victoria",
+    "Wensencia",
+    "Zondra",
+];
+
 export const male_names = [
     "Alek",
     "Andrej",
@@ -41,45 +80,6 @@ export const male_names = [
     "Waltar",
     "Yesper",
     "Zsolt",
-];
-
-export const female_names = [
-    "Alana",
-    "Clavdia",
-    "Danya",
-    "Dezdrelda",
-    "Diavola",
-    "Dorina",
-    "Drasha",
-    "Drilvia",
-    "Elisabeta",
-    "Fatima",
-    "Grilsha",
-    "Isabella",
-    "Ivana",
-    "Jarzinka",
-    "Kala",
-    "Katerina",
-    "Kereza",
-    "Korina",
-    "Lavinia",
-    "Magda",
-    "Marta",
-    "Mathilda",
-    "Minodora",
-    "Mirabel",
-    "Miruna",
-    "Nimira",
-    "Nyanka",
-    "Olivenka",
-    "Ruxandra",
-    "Serina",
-    "Tereska",
-    "Valentina",
-    "Vasha",
-    "Victoria",
-    "Wensencia",
-    "Zondra",
 ];
 
 export const family_names = [
@@ -146,3 +146,15 @@ export const family_names = [
     "Zalenski",
     "Zalken",
 ];
+
+export const getFemaleName = () => {
+    const first_name_index = Math.floor(Math.random() * female_names.length);
+    const family_name_index = Math.floor(Math.random() * family_names.length);
+    return `${female_names[first_name_index]} ${family_names[family_name_index]}`;
+};
+
+export const getMaleName = () => {
+    const first_name_index = Math.floor(Math.random() * male_names.length);
+    const family_name_index = Math.floor(Math.random() * family_names.length);
+    return `${male_names[first_name_index]} ${family_names[family_name_index]}`;
+};

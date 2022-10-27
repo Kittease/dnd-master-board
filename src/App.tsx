@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { getMonster, getMonsters } from "./Services/api";
-import Encounter from "./Components/Encounter";
-import { EncounterCharacter, Monster } from "./Types/Encounter";
-import { male_names, female_names, family_names } from "./Types/Names";
+import CasinoIcon from "@mui/icons-material/Casino";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import ManIcon from "@mui/icons-material/Man";
+import SaveIcon from "@mui/icons-material/Save";
+import SportsKabaddiIcon from "@mui/icons-material/SportsKabaddi";
+import WomanIcon from "@mui/icons-material/Woman";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import {
     Autocomplete,
     Box,
@@ -12,7 +15,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     Divider,
     FormControlLabel,
@@ -20,53 +22,51 @@ import {
     IconButton,
     TextField,
 } from "@mui/material";
-import CasinoIcon from "@mui/icons-material/Casino";
-import ManIcon from "@mui/icons-material/Man";
-import WomanIcon from "@mui/icons-material/Woman";
-import SaveIcon from "@mui/icons-material/Save";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import { rollDice } from "./Technical/roll";
-
-const GetMaleName = () => {
-    const first_name_index = Math.floor(Math.random() * male_names.length);
-    const family_name_index = Math.floor(Math.random() * family_names.length);
-    return `${male_names[first_name_index]} ${family_names[family_name_index]}`;
-};
-
-const GetFemaleName = () => {
-    const first_name_index = Math.floor(Math.random() * female_names.length);
-    const family_name_index = Math.floor(Math.random() * family_names.length);
-    return `${female_names[first_name_index]} ${family_names[family_name_index]}`;
-};
+import Encounter from "./Components/Encounter";
+import RandomBarovianEncounterPopup from "./Components/RandomBarovianEncounterPopup";
+import RandomCharacterPopup from "./Components/RandomCharacterPopup";
+import { getMonster, getMonsters } from "./Services/api";
+import { EncounterCharacter, Monster } from "./Types/Encounter";
 
 const App = () => {
-    const [popupTitle, setPopupTitle] = useState("");
-    const [popupData, setPopupData] = useState("");
-    const [popupOpen, setPopupOpen] = useState(false);
+    const [randomCharacterPopupTitle, setRandomCharacterPopupTitle] =
+        useState("");
+    const [randomCharacterPopupGender, setRandomCharacterPopupGender] =
+        useState(true);
+    const [randomCharacterPopupOpen, setRandomCharacterPopupOpen] =
+        useState(false);
 
-    const handlePopupOpening = (title: string, data: string) => {
-        setPopupTitle(title);
-        setPopupData(data);
-        setPopupOpen(true);
+    const handleRandomCharacterPopupOpening = (
+        title: string,
+        isMale: boolean
+    ) => {
+        setRandomCharacterPopupTitle(title);
+        setRandomCharacterPopupGender(isMale);
+        setRandomCharacterPopupOpen(true);
     };
 
-    const handlePopupClosing = () => {
-        setPopupOpen(false);
+    const handleRandomCharacterPopupClosing = () => {
+        setRandomCharacterPopupOpen(false);
     };
 
-    const characterHasASoul = () => {
-        return Math.random() <= 0.1;
+    const [
+        randomBarovianEncounterPopupDaytime,
+        setRandomBarovianEncounterPopupDaytime,
+    ] = useState(true);
+    const [
+        randomBarovianEncounterPopupOpen,
+        setRandomBarovianEncounterPopupOpen,
+    ] = useState(false);
+
+    const handleRandomBarovianEncounterPopupOpening = (daytime: boolean) => {
+        setRandomBarovianEncounterPopupDaytime(daytime);
+        setRandomBarovianEncounterPopupOpen(true);
     };
 
-    const getRandomAbilityScore = () => {
-        const rolls = [...Array(4)].map((_) => rollDice(6));
-        rolls
-            .sort((a, b) => {
-                return a - b;
-            })
-            .shift();
-        return rolls.reduce((acc, a) => acc + a, 0);
+    const handleRandomBarovianEncounterPopupClosing = () => {
+        setRandomBarovianEncounterPopupOpen(false);
     };
 
     const notesRef = useRef<HTMLPreElement>(null);
@@ -263,11 +263,10 @@ const App = () => {
             <Box id="header">
                 <IconButton
                     className="large-button"
-                    aria-label="load"
                     onClick={() =>
-                        handlePopupOpening(
+                        handleRandomCharacterPopupOpening(
                             "Random Male Character",
-                            GetMaleName()
+                            true
                         )
                     }
                 >
@@ -277,16 +276,35 @@ const App = () => {
 
                 <IconButton
                     className="large-button"
-                    aria-label="save"
                     onClick={() =>
-                        handlePopupOpening(
+                        handleRandomCharacterPopupOpening(
                             "Random Female Character",
-                            GetFemaleName()
+                            false
                         )
                     }
                 >
                     <CasinoIcon fontSize="large" />
                     <WomanIcon fontSize="large" />
+                </IconButton>
+
+                <IconButton
+                    className="large-button"
+                    onClick={() =>
+                        handleRandomBarovianEncounterPopupOpening(true)
+                    }
+                >
+                    <SportsKabaddiIcon fontSize="large" />
+                    <LightModeIcon fontSize="large" />
+                </IconButton>
+
+                <IconButton
+                    className="large-button"
+                    onClick={() =>
+                        handleRandomBarovianEncounterPopupOpening(false)
+                    }
+                >
+                    <SportsKabaddiIcon fontSize="large" />
+                    <DarkModeIcon fontSize="large" />
                 </IconButton>
 
                 <IconButton aria-label="load" onClick={loadData}>
@@ -322,56 +340,18 @@ const App = () => {
                 </Box>
             </Box>
 
-            <Dialog
-                open={popupOpen}
-                onClose={handlePopupClosing}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">{popupTitle}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        <h1 id="random-character-name">{popupData}</h1>
+            <RandomCharacterPopup
+                title={randomCharacterPopupTitle}
+                isMale={randomCharacterPopupGender}
+                isOpen={randomCharacterPopupOpen}
+                handleClose={handleRandomCharacterPopupClosing}
+            />
 
-                        <p>
-                            Has a soul:{" "}
-                            <b>{characterHasASoul() ? "Yes" : "No"}</b>
-                        </p>
-
-                        <Box id="random-character-abilities">
-                            <Box className="random-character-ability">
-                                <h1>DEX</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                            <Box className="random-character-ability">
-                                <h1>STR</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                            <Box className="random-character-ability">
-                                <h1>CON</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                            <Box className="random-character-ability">
-                                <h1>INT</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                            <Box className="random-character-ability">
-                                <h1>WIS</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                            <Box className="random-character-ability">
-                                <h1>CHA</h1>
-                                <h2>{getRandomAbilityScore()}</h2>
-                            </Box>
-                        </Box>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handlePopupClosing} autoFocus>
-                        Ok
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <RandomBarovianEncounterPopup
+                daytime={randomBarovianEncounterPopupDaytime}
+                isOpen={randomBarovianEncounterPopupOpen}
+                handleClose={handleRandomBarovianEncounterPopupClosing}
+            />
 
             <Dialog
                 open={encounterPopupOpen}

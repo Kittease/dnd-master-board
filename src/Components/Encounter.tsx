@@ -1,5 +1,5 @@
-import React from "react";
-import { EncounterCharacter } from "../Types/Encounter";
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton } from "@mui/material";
 import {
     DataGrid,
@@ -9,8 +9,8 @@ import {
     MuiBaseEvent,
     MuiEvent,
 } from "@mui/x-data-grid";
-import AddIcon from "@mui/icons-material/Add";
-import ClearIcon from "@mui/icons-material/Clear";
+import React from "react";
+import { EncounterCharacter } from "../Types/Encounter";
 
 interface EncounterProps {
     encounterCharacters: EncounterCharacter[];
