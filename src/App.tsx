@@ -26,6 +26,7 @@ import WomanIcon from "@mui/icons-material/Woman";
 import SaveIcon from "@mui/icons-material/Save";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import "./App.css";
+import { rollDice } from "./Technical/roll";
 
 const GetMaleName = () => {
     const first_name_index = Math.floor(Math.random() * male_names.length);
@@ -52,6 +53,20 @@ const App = () => {
 
     const handlePopupClosing = () => {
         setPopupOpen(false);
+    };
+
+    const characterHasASoul = () => {
+        return Math.random() <= 0.1;
+    };
+
+    const getRandomAbilityScore = () => {
+        const rolls = [...Array(4)].map((_) => rollDice(6));
+        rolls
+            .sort((a, b) => {
+                return a - b;
+            })
+            .shift();
+        return rolls.reduce((acc, a) => acc + a, 0);
     };
 
     const notesRef = useRef<HTMLPreElement>(null);
@@ -316,7 +331,39 @@ const App = () => {
                 <DialogTitle id="alert-dialog-title">{popupTitle}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {popupData}
+                        <h1 id="random-character-name">{popupData}</h1>
+
+                        <p>
+                            Has a soul:{" "}
+                            <b>{characterHasASoul() ? "Yes" : "No"}</b>
+                        </p>
+
+                        <Box id="random-character-abilities">
+                            <Box className="random-character-ability">
+                                <h1>DEX</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                            <Box className="random-character-ability">
+                                <h1>STR</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                            <Box className="random-character-ability">
+                                <h1>CON</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                            <Box className="random-character-ability">
+                                <h1>INT</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                            <Box className="random-character-ability">
+                                <h1>WIS</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                            <Box className="random-character-ability">
+                                <h1>CHA</h1>
+                                <h2>{getRandomAbilityScore()}</h2>
+                            </Box>
+                        </Box>
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
